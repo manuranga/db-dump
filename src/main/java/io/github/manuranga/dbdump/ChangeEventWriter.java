@@ -29,9 +29,9 @@ public class ChangeEventWriter {
     private final Path requestsDir;
     private final Path mainLog;
 
-    public ChangeEventWriter(Path logsDir) throws IOException {
-        this.requestsDir = logsDir.resolve("requests");
-        this.mainLog = logsDir.resolve("db-dump.txt");
+    public ChangeEventWriter(Path requestsDir, Path mainLog) throws IOException {
+        this.requestsDir = requestsDir;
+        this.mainLog = mainLog;
         Files.createDirectories(requestsDir);
 
         this.mapper = new ObjectMapper();
@@ -84,10 +84,12 @@ public class ChangeEventWriter {
         Path file = requestsDir.resolve(filename);
         Files.writeString(file, sb.toString(), StandardCharsets.UTF_8);
 
-        String logLine = filename + " " + op + " " + table + "\n";
-        try (Writer w = Files.newBufferedWriter(mainLog, StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
-            w.write(logLine);
+        if (mainLog != null) {
+            String logLine = filename + " " + op + " " + table + "\n";
+            try (Writer w = Files.newBufferedWriter(mainLog, StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+                w.write(logLine);
+            }
         }
 
         log.debug("{} {} {}", op, table, keyShort);

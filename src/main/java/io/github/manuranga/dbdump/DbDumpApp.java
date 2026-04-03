@@ -26,7 +26,8 @@ public class DbDumpApp {
         String dbUser = requireEnv("DB_USER");
         String dbPassword = requireEnv("DB_PASSWORD");
         String offsetFile = env("OFFSET_FILE", "data/offsets.dat");
-        String logsDir = env("LOGS_DIR", "logs");
+        String requestsDir = env("LOGS_DIR", "logs");
+        String mainLog = env("MAIN_LOG", "");
 
         List<String> errors = new ArrayList<>();
         try {
@@ -50,7 +51,9 @@ public class DbDumpApp {
             Files.createDirectories(dataDir);
         }
 
-        ChangeEventWriter writer = new ChangeEventWriter(Path.of(logsDir));
+        ChangeEventWriter writer = new ChangeEventWriter(
+                Path.of(requestsDir),
+                mainLog.isBlank() ? null : Path.of(mainLog));
 
         Properties props = new Properties();
         props.setProperty("name", "db-dump");
