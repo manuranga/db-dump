@@ -28,6 +28,8 @@ public class DbDumpApp {
         String offsetFile = env("OFFSET_FILE", "data/offsets.dat");
         String requestsDir = env("LOGS_DIR", "logs");
         String mainLog = env("MAIN_LOG", "");
+        String slotName = env("SLOT_NAME", "debezium");
+        String topicPrefix = env("TOPIC_PREFIX", "dbdump");
 
         List<String> errors = new ArrayList<>();
         try {
@@ -68,7 +70,8 @@ public class DbDumpApp {
         props.setProperty("database.user", dbUser);
         props.setProperty("database.password", dbPassword);
         props.setProperty("database.dbname", dbName);
-        props.setProperty("topic.prefix", "dbdump");
+        props.setProperty("topic.prefix", topicPrefix);
+        props.setProperty("slot.name", slotName);
         props.setProperty("plugin.name", "pgoutput");
         props.setProperty("snapshot.mode", "initial");
         props.setProperty("schema.include.list", "public");
