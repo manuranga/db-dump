@@ -30,6 +30,7 @@ public class DbDumpApp {
         String mainLog = env("MAIN_LOG", "");
         String slotName = env("SLOT_NAME", "debezium");
         String topicPrefix = env("TOPIC_PREFIX", "dbdump");
+        String sourceLabel = env("SOURCE_LABEL", "db-cdc");
 
         List<String> errors = new ArrayList<>();
         try {
@@ -55,7 +56,8 @@ public class DbDumpApp {
 
         ChangeEventWriter writer = new ChangeEventWriter(
                 Path.of(requestsDir),
-                mainLog.isBlank() ? null : Path.of(mainLog));
+                mainLog.isBlank() ? null : Path.of(mainLog),
+                sourceLabel);
 
         Properties props = new Properties();
         props.setProperty("name", "db-dump");

@@ -28,10 +28,12 @@ public class ChangeEventWriter {
     private final ObjectMapper mapper;
     private final Path requestsDir;
     private final Path mainLog;
+    private final String sourceLabel;
 
-    public ChangeEventWriter(Path requestsDir, Path mainLog) throws IOException {
+    public ChangeEventWriter(Path requestsDir, Path mainLog, String sourceLabel) throws IOException {
         this.requestsDir = requestsDir;
         this.mainLog = mainLog;
+        this.sourceLabel = sourceLabel;
         Files.createDirectories(requestsDir);
 
         this.mapper = new ObjectMapper();
@@ -65,8 +67,8 @@ public class ChangeEventWriter {
 
         String keyShort = shortKey(key);
 
-        String filename = String.format("%s_db-cdc_%s_%s_%s.txt",
-                FILE_TIME_FMT.format(ts), op, table, keyShort);
+        String filename = String.format("%s_%s_%s_%s_%s.txt",
+                FILE_TIME_FMT.format(ts), sourceLabel, op, table, keyShort);
 
         JsonNode before = payload.path("before");
         JsonNode after = payload.path("after");
